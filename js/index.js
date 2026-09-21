@@ -1,4 +1,5 @@
-import { CRUDelete } from "./CRUD.js";
+import { deleteStudentFromLocalStorage } from "./localStorageOperations.js";
+import { renderTable } from "./displayOperations.js";
 
 //! initialase (Я хз как пишется) LS
 
@@ -10,29 +11,13 @@ if (localStorage.getItem("students") === null) {
 const butt = document.querySelector("#show-add-form-bin")
 
 butt.addEventListener("click", () => {
-    location.href = "form.html"
+    location.href = "studentFormPage.html"
 })
 
 const students = JSON.parse(localStorage.getItem("students"))
 
-//! viewStudent
-function renderTable(table = document.querySelector("tbody"), students = JSON.parse(localStorage.getItem("students"))) {
-    table.innerHTML = "";
-    for(let i = 0; i < students.length; i++) {
-        const template = `
-    <tr data-id="${students[i].ID}">
-        <td><a href="../html/info.html?id=${students[i].ID}">${students[i].fullName}</a></td>
-        <td>${students[i].group}</td>
-        <td>${students[i].ISU}</td>
-        <td>
-            <button class="btn-edit">Изменить</button>
-            <button class="btn-delete">Удалить</button>
-        </td>
-    </tr>`
-        table.innerHTML += template;
-    }
-}
 
+//!DisplayTable
 renderTable();
 
 //! button's work
@@ -40,11 +25,11 @@ renderTable();
 const table = document.querySelector("tbody");
 table.addEventListener("click", (event) => {
     if(event.target.textContent === "Удалить") {
-        CRUDelete(event.target.closest("tr").dataset.id)
+        deleteStudentFromLocalStorage(event.target.closest("tr").dataset.id)
     }
     //todo Make about update
     if(event.target.textContent === "Изменить") {
-        location.href = `../html/form.html?id=${event.target.closest("tr").dataset.id}`;
+        location.href = `../html/studentFormPage.html?id=${event.target.closest("tr").dataset.id}`;
     }
     renderTable();
 })

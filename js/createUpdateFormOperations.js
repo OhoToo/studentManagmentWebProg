@@ -1,5 +1,5 @@
-import { CreateRUD, createStudent, checkErrorStudent, getBack } from "./CRUD.js";
-
+import { saveToLocalStorage, addStudentToLocalStorage } from "./localStorageOperations.js";
+import { createStudent  } from "./studentInitialization.js";
 
 
 const sendButton = document.querySelector("#student-form");
@@ -32,7 +32,7 @@ if(location.search === "") {
             );
             //! save Student
             
-            CreateRUD(student);
+            addStudentToLocalStorage(student);
 
             //!goto index
             location.href = "index.html"
@@ -101,7 +101,7 @@ else {
             );
 
             students[studentNum] = updatedStudent;
-            getBack(students)
+            saveToLocalStorage(students)
 
             location.href = "index.html"
         } catch(error) {

@@ -1,12 +1,9 @@
-function getBack(students) {
-    localStorage.setItem("students", JSON.stringify(students));
-}
 
 
-function checkErrorStudent(student, students = JSON.parse(localStorage.getItem("students"))) {
+
+function validateStudentForm(student, students = JSON.parse(localStorage.getItem("students"))) {
     //! error
     let errorName = "";
-    
     const names = student.fullName.trim().split(/\s+/);
 
     if(student.fullName.trim() === "" || names.some((word) => word.length < 2) || names.length < 2) {
@@ -18,7 +15,7 @@ function checkErrorStudent(student, students = JSON.parse(localStorage.getItem("
         errorName += "group ";
     }
 
-    if (!/^[0-9]{6}$/.test(student.ISU) || students.some((readyStudent) => readyStudent.ISU === student.ISU && readyStudent.ID !== student.ID)) {
+    if(!/^[0-9]{6}$/.test(student.ISU) || students.some((readyStudent) => readyStudent.ISU === student.ISU && readyStudent.ID !== student.ID)) {
         errorName += "ISU ";
     }
 
@@ -48,7 +45,7 @@ function createStudent(fullName, group, ISU, dormNumber, stuRoom, dateArrived, i
     }
     student.ID = id ?? crypto.randomUUID();
     //!errors
-    checkErrorStudent(student);
+    validateStudentForm(student);
 
     let names = student.fullName.trim().split(/\s+/);
     for(let i = 0; i < names.length; i++) {
@@ -62,36 +59,4 @@ function createStudent(fullName, group, ISU, dormNumber, stuRoom, dateArrived, i
     return student;
 }
 
-
-
-function CreateRUD(student) {
-    const students = JSON.parse(localStorage.getItem("students"));
-
-    students.unshift(student);
-
-    getBack(students);
-}
-
-
-
-
-
-function CRUDelete(studentID) {
-    const students = JSON.parse(localStorage.getItem("students"));
-
-    students.splice(students.findIndex((student) => student.ID === studentID),1);
-
-    getBack(students);
-}
-
-
-
-
-
-
-
-
-
-//! export
-
-export { CreateRUD, CRUDelete, createStudent, getBack, checkErrorStudent }
+export { createStudent }
