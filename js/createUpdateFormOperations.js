@@ -1,91 +1,95 @@
-import { saveToLocalStorage, addStudentToLocalStorage } from "./localStorageOperations.js";
-import { createStudent  } from "./studentInitialization.js";
+import {
+    getStudentById,
+    addStudent,
+    updateStudent
+} from "./localStorageOperations.js";
+
+import { createStudent } from "./studentInitialization.js";
 
 
-const sendButton = document.querySelector("#student-form");
-
-//!create new student Processing--------------------------------------------
-
-if(location.search === "") {
-    sendButton.addEventListener("submit", (event) => {
-        event.preventDefault();
-
-        const formData = new FormData(sendButton);
+const form = document.querySelector("#student-form");
+const formSection = document.querySelector("#form-section");
 
 
-        //! check errorBlock
-        const errorBlock = document.querySelector(".error-message");
-        if(errorBlock !== null) {
-            errorBlock.remove();
-        }
+function showError(message) {
+    const oldError = document.querySelector(".error-message");
 
-        try {
-            const student = createStudent(
-                formData.get("stu-name"),
-                formData.get("stu-group"),
-                formData.get("stu-isu"),
-                formData.get("stu-hostel"),
-                formData.get("stu-room"),
-                formData.get("stu-date"),
-                formData.has("stu-foreign"),
-                formData.get("stu-notes")
-            );
-            //! save Student
-            
-            addStudentToLocalStorage(student);
+    if (oldError) {
+        oldError.remove();
+    }
 
-            //!goto index
-            location.href = "index.html"
-        } catch(error) {
-            console.log(error.name)
-            const attention = document.createElement("p");
-            attention.classList.add("error-message")
-            attention.style.color = "red";
-            attention.textContent = error.message;
+    const errorBlock = document.createElement("p");
 
-            const formBlock = document.querySelector("#form-section");
+    errorBlock.classList.add("error-message");
+    errorBlock.textContent = message;
 
-            formBlock.prepend(attention);
-        } 
-
-        
-    })
+    formSection.prepend(errorBlock);
 }
 
 
-//! Update student processing---------------------------------------------
 
-else {
-    //!Insert
-    const inputs = sendButton.querySelectorAll('input:not([type="checkbox"]), textarea');
-    const studentID = new URLSearchParams(location.search).get("id");
-    const students = JSON.parse(localStorage.getItem("students"));
-    const student = students.find((student) => student.ID === studentID);
-    const studentNum = students.findIndex((student) => student.ID === studentID)
-    const stuAtr = [student.fullName, student.group, student.ISU, student.dormNumber, student.room, student.dateArrived, student.notes]
+async function createNewStudent() {
+    const formData = new FormData(form);
+
+    const student = createStudent(
+        formData.get("stu-name"),
+        formData.get("stu-group"),
+        formData.get("stu-isu"),
+        formData.get("stu-hostel"),
+        formData.get("stu-room"),
+        formData.get("stu-date"),
+        formData.has("stu-foreign"),
+        formData.get("stu-notes")
+    );
+
+    await addStudent(student);
+
+    location.href = "/";
+}
 
 
 
-    for(let i = 0; i < inputs.length; i++) {
-        inputs[i].value = stuAtr[i];
+async function updateExistingStudent(studentID) {
+    const student = await getStudentById(studentID);
+
+    if (student === null) {
+        showError("Студент не найден");
+        return;
     }
-    const checkbox = sendButton.querySelector("#stu-foreign");
-    checkbox.checked = student.isForeign;
 
 
-    //! Sendform
-    sendButton.addEventListener("submit", (event) => {
+    document.querySelector("#stu-name").value =
+        student.fullName ?? "";
+
+    document.querySelector("#stu-group").value =
+        student.group ?? "";
+
+    document.querySelector("#stu-isu").value =
+        student.ISU ?? "";
+
+    document.querySelector("#stu-hostel").value =
+        student.dormNumber ?? "";
+
+    document.querySelector("#stu-room").value =
+        student.room ?? "";
+
+    document.querySelector("#stu-date").value =
+        student.dateArrived ?? "";
+
+    document.querySelector("#stu-foreign").checked =
+        student.isForeign ?? false;
+
+    document.querySelector("#stu-notes").value =
+        student.notes ?? "";
+
+
+    document.querySelector("#form-title").textContent =
+        "Редактирование студента";
+
+    form.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-
-        const formData = new FormData(sendButton);
-
-        //! check errorBlock
-        const errorBlock = document.querySelector(".error-message");
-        if(errorBlock !== null) {
-            errorBlock.remove();
-        }
-
+        const formData = new FormData(form);
 
         try {
             const updatedStudent = createStudent(
@@ -100,21 +104,50 @@ else {
                 student.ID
             );
 
-            students[studentNum] = updatedStudent;
-            saveToLocalStorage(students)
+            await updateStudent(
+                studentID,
+                updatedStudent
+            );
 
-            location.href = "index.html"
-        } catch(error) {
-            console.log(error.name)
-            const attention = document.createElement("p");
-            attention.classList.add("error-message")
-            attention.style.color = "red";
-            attention.textContent = error.message;
-
-            const formBlock = document.querySelector("#form-section");
-
-            formBlock.prepend(attention);
+            location.href = "/";
+        } catch (error) {
+            console.error(error);
+            showError(error.message);
         }
-    })
+    });
 }
 
+
+
+async function init() {
+    const studentID =
+        new URLSearchParams(location.search).get("id");
+
+
+    if (!studentID) {
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            try {
+                await createNewStudent();
+            } catch (error) {
+                console.error(error);
+                showError(error.message);
+            }
+        });
+
+        return;
+    }
+
+
+
+    try {
+        await updateExistingStudent(studentID);
+    } catch (error) {
+        console.error(error);
+        showError(error.message);
+    }
+}
+
+
+init();

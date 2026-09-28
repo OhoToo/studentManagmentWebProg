@@ -10,7 +10,7 @@
 html {
     font-size: 100%;
     font-family: Arial, sans-serif;
-    background-color: #fcfcfc;
+    background: linear-gradient(to right, gray, #7FFFD4);
     color: #333;
 }
 
@@ -76,8 +76,7 @@ button:hover,
     background-color: #dc3545;
 }
 
-.btn-cancel,
-.btn-cancal {
+.btn-cancel {
     background-color: #6c757d;
 }
 
@@ -204,10 +203,21 @@ h1,
         font-weight: bold;
     }
 
-    #student-table td:nth-child(1)::before { content: "ФИО:"; }
-    #student-table td:nth-child(2)::before { content: "Группа:"; }
-    #student-table td:nth-child(3)::before { content: "ИСУ ID:"; }
-    #student-table td:nth-child(4)::before { content: "Действия:"; }
+    #student-table td:nth-child(1)::before {
+        content: "ФИО:";
+    }
+
+    #student-table td:nth-child(2)::before {
+        content: "Группа:";
+    }
+
+    #student-table td:nth-child(3)::before {
+        content: "ИСУ ID:";
+    }
+
+    #student-table td:nth-child(4)::before {
+        content: "Действия:";
+    }
 
     .form-buttons > * {
         width: 100%;
