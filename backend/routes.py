@@ -20,21 +20,21 @@ def error_response(message, status_code):
 
 
 
-@api_bp.route("/requests", methods=["GET"])
+@api_bp.get("/requests")
 def get_requests():
+    full_name = request.args.get("fullName")
     group = request.args.get("group")
     dormitory = request.args.get("dormitory")
 
     students = service.get_all_requests(
+        full_name=full_name,
         group=group,
         dormitory=dormitory
     )
 
     return jsonify(students), 200
 
-
-
-@api_bp.route("/requests/<student_id>", methods=["GET"])
+@api_bp.get("/requests/<student_id>")
 def get_request(student_id):
     student = service.get_request_by_id(student_id)
 
@@ -45,6 +45,7 @@ def get_request(student_id):
         )
 
     return jsonify(student), 200
+
 
 
 

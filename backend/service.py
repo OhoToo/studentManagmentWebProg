@@ -111,25 +111,37 @@ def validate_student(data):
 
 
 
-def get_all_requests(group=None, dormitory=None):
+def get_all_requests(full_name=None, group=None, dormitory=None):
     students = storage.load_data()
 
+    if full_name:
+        search_words = full_name.strip().casefold().split()
 
-    if group is not None:
         students = [
             student
             for student in students
-            if student.get("group") == group
+            if all(
+                word in student.get("fullName", "").casefold()
+                for word in search_words
+            )
         ]
 
+    if group:
+        target_group = group.strip().casefold()
 
-    if dormitory is not None:
+        students = [
+            student
+            for student in students
+            if student.get("group", "").strip().casefold()
+            == target_group
+        ]
+
+    if dormitory:
         students = [
             student
             for student in students
             if str(student.get("dormNumber")) == str(dormitory)
         ]
-
 
     return students
 
@@ -185,7 +197,6 @@ def create_request(data):
     )
 
 
-\
 
     student["group"] = (
         student["group"][0].upper()

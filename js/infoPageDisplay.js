@@ -1,4 +1,4 @@
-import { getStudentById } from "./localStorageOperations.js";
+import { getStudentById } from "./storageOperations.js";
 
 
 const studentID = new URLSearchParams(location.search).get("id");

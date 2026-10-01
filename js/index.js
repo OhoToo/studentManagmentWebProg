@@ -1,7 +1,7 @@
 import {
     getStudents,
     deleteStudent
-} from "./localStorageOperations.js";
+} from "./storageOperations.js";
 
 import {
     renderTable
@@ -16,6 +16,8 @@ const addButton = document.querySelector(
 addButton.addEventListener("click", () => {
     location.href = "/html/studentFormPage.html";
 });
+
+
 
 
 const filterForm = document.querySelector(
@@ -37,20 +39,19 @@ const resetFilterButton = document.querySelector(
 
 
 
+const nameFilter = document.querySelector("#name-filter");
+
 async function loadStudents() {
     try {
         const students = await getStudents(
+            nameFilter.value.trim(),
             groupFilter.value.trim(),
             dormitoryFilter.value.trim()
         );
 
         renderTable(undefined, students);
-
     } catch (error) {
-        console.error(
-            "Ошибка при загрузке студентов:",
-            error
-        );
+        console.error("Ошибка при загрузке студентов:", error);
     }
 }
 
@@ -74,6 +75,7 @@ filterForm.addEventListener(
 resetFilterButton.addEventListener(
     "click",
     async () => {
+        nameFilter.value = "";
         groupFilter.value = "";
         dormitoryFilter.value = "";
 

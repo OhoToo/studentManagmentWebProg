@@ -1,7 +1,15 @@
 const API_URL = "/api/requests";
 
-async function getStudents(groupFilter = "", dormFilter = "") {
+async function getStudents(
+    nameFilter = "",
+    groupFilter = "",
+    dormFilter = ""
+) {
     const params = new URLSearchParams();
+
+    if (nameFilter) {
+        params.set("fullName", nameFilter);
+    }
 
     if (groupFilter) {
         params.set("group", groupFilter);
@@ -15,11 +23,12 @@ async function getStudents(groupFilter = "", dormFilter = "") {
     const url = query ? `${API_URL}?${query}` : API_URL;
 
     const response = await fetch(url);
-
     const result = await response.json();
 
     if (!response.ok) {
-        throw new Error(result.error || `Ошибка HTTP: ${response.status}`);
+        throw new Error(
+            result.error || `Ошибка HTTP: ${response.status}`
+        );
     }
 
     return result;

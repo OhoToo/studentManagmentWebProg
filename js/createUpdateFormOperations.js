@@ -2,7 +2,7 @@ import {
     getStudentById,
     addStudent,
     updateStudent
-} from "./localStorageOperations.js";
+} from "./storageOperations.js";
 
 import { createStudent } from "./studentInitialization.js";
 

@@ -72,7 +72,7 @@ function createStudent(
 
 
 
-    student.ID = id ?? crypto.randomUUID();
+    //? осталось с лабы 1 student.ID = id ?? crypto.randomUUID();
 
 
 
