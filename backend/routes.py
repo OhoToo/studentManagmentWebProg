@@ -21,15 +21,46 @@ def error_response(message, status_code):
 
 
 @api_bp.get("/requests")
-def get_requests():
+def get_students():
     full_name = request.args.get("fullName")
     group = request.args.get("group")
     dormitory = request.args.get("dormitory")
 
+    if full_name is not None and not full_name.strip():
+        return error_response(
+            "fullName must not be empty",
+            400,
+        )
+
+    if group is not None and not group.strip():
+        return error_response(
+            "group must not be empty",
+            400,
+        )
+
     students = service.get_all_requests(
         full_name=full_name,
         group=group,
-        dormitory=dormitory
+        dormitory=dormitory,
+    )
+
+    return jsonify(students), 200
+
+
+@api_bp.route("/requests", methods=["QUERY"])
+def query_students():
+    filters = request.get_json(silent=True)
+
+    if not isinstance(filters, dict):
+        return error_response(
+            "Request body must contain a JSON object",
+            400,
+        )
+
+    students = service.get_all_requests(
+        full_name=filters.get("fullName"),
+        group=filters.get("group"),
+        dormitory=filters.get("dormitory"),
     )
 
     return jsonify(students), 200

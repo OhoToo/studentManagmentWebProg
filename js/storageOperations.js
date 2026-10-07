@@ -3,26 +3,43 @@ const API_URL = "/api/requests";
 async function getStudents(
     nameFilter = "",
     groupFilter = "",
-    dormFilter = ""
+    dormitoryFilter = ""
 ) {
-    const params = new URLSearchParams();
+    const filters = {
+        fullName: nameFilter.trim(),
+        group: groupFilter.trim(),
+        dormitory: dormitoryFilter.trim()
+    };
 
-    if (nameFilter) {
-        params.set("fullName", nameFilter);
+    const activeFilters = Object.fromEntries(
+        Object.entries(filters).filter(
+            ([, value]) => value !== ""
+        )
+    );
+
+    const filterCount = Object.keys(activeFilters).length;
+
+    let response;
+
+    if (filterCount <= 1) {
+        const params = new URLSearchParams(activeFilters);
+        const queryString = params.toString();
+
+        const url = queryString
+            ? `${API_URL}?${queryString}`
+            : API_URL;
+
+        response = await fetch(url);
+    } else {
+        response = await fetch(API_URL, {
+            method: "QUERY",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(activeFilters)
+        });
     }
 
-    if (groupFilter) {
-        params.set("group", groupFilter);
-    }
-
-    if (dormFilter) {
-        params.set("dormitory", dormFilter);
-    }
-
-    const query = params.toString();
-    const url = query ? `${API_URL}?${query}` : API_URL;
-
-    const response = await fetch(url);
     const result = await response.json();
 
     if (!response.ok) {

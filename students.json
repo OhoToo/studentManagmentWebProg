@@ -20,5 +20,27 @@
         "dateArrived": null,
         "isForeign": false,
         "notes": ""
+    },
+    {
+        "ID": "c1f0806c-a7f5-4fcc-9739-9b9aea1fdeaf",
+        "fullName": "Уц Цу Цу",
+        "group": "E2345",
+        "ISU": "000000",
+        "dormNumber": null,
+        "room": null,
+        "dateArrived": null,
+        "isForeign": false,
+        "notes": ""
+    },
+    {
+        "ID": "02004b47-01cd-4b66-b6ab-e58be0608603",
+        "fullName": "Efw Wfefw",
+        "group": "D2422",
+        "ISU": "234233",
+        "dormNumber": null,
+        "room": null,
+        "dateArrived": null,
+        "isForeign": false,
+        "notes": ""
     }
 ]
