@@ -1,60 +1,133 @@
-import { CRUDelete } from "./CRUD.js";
+import {
+    getStudents,
+    deleteStudent
+} from "./storageOperations.js";
 
-//! initialase (Я хз как пишется) LS
+import {
+    renderTable
+} from "./displayOperations.js";
 
-if (localStorage.getItem("students") === null) {
-    localStorage.setItem("students", JSON.stringify([]));
-}
 
-//!gotocreateStudent------------------------------------------------
-const butt = document.querySelector("#show-add-form-bin")
 
-butt.addEventListener("click", () => {
-    location.href = "form.html"
-})
+const addButton = document.querySelector(
+    "#show-add-form-bin"
+);
 
-const students = JSON.parse(localStorage.getItem("students"))
+addButton.addEventListener("click", () => {
+    location.href = "/html/studentFormPage.html";
+});
 
-//! viewStudent
-function renderTable(table = document.querySelector("tbody"), students = JSON.parse(localStorage.getItem("students"))) {
-    table.innerHTML = "";
-    for(let i = 0; i < students.length; i++) {
-        const template = `
-    <tr data-id="${students[i].ID}">
-        <td><a href="../html/info.html?id=${students[i].ID}">${students[i].fullName}</a></td>
-        <td>${students[i].group}</td>
-        <td>${students[i].ISU}</td>
-        <td>
-            <button class="btn-edit">Изменить</button>
-            <button class="btn-delete">Удалить</button>
-        </td>
-    </tr>`
-        table.innerHTML += template;
+
+
+
+const filterForm = document.querySelector(
+    "#filter-form"
+);
+
+const groupFilter = document.querySelector(
+    "#group-filter"
+);
+
+const dormitoryFilter = document.querySelector(
+    "#dormitory-filter"
+);
+
+const resetFilterButton = document.querySelector(
+    "#reset-filter-button"
+);
+
+
+
+
+const nameFilter = document.querySelector("#name-filter");
+
+async function loadStudents() {
+    try {
+        const students = await getStudents(
+            nameFilter.value.trim(),
+            groupFilter.value.trim(),
+            dormitoryFilter.value.trim()
+        );
+
+        renderTable(undefined, students);
+    } catch (error) {
+        console.error("Ошибка при загрузке студентов:", error);
     }
 }
 
-renderTable();
 
-//! button's work
 
-const table = document.querySelector("tbody");
-table.addEventListener("click", (event) => {
-    if(event.target.textContent === "Удалить") {
-        CRUDelete(event.target.closest("tr").dataset.id)
+loadStudents();
+
+
+
+filterForm.addEventListener(
+    "submit",
+    async (event) => {
+        event.preventDefault();
+
+        await loadStudents();
     }
-    //todo Make about update
-    if(event.target.textContent === "Изменить") {
-        location.href = `../html/form.html?id=${event.target.closest("tr").dataset.id}`;
+);
+
+
+
+resetFilterButton.addEventListener(
+    "click",
+    async () => {
+        nameFilter.value = "";
+        groupFilter.value = "";
+        dormitoryFilter.value = "";
+
+        await loadStudents();
     }
-    renderTable();
-})
+);
+
+
+const table = document.querySelector(
+    "#students-tbody"
+);
+
+table.addEventListener(
+    "click",
+    async (event) => {
+        const row = event.target.closest("tr");
+
+        if (!row) {
+            return;
+        }
+
+        const studentID = row.dataset.id;
 
 
 
+        if (
+            event.target.classList.contains(
+                "btn-delete"
+            )
+        ) {
+            try {
+                await deleteStudent(studentID);
+
+                await loadStudents();
+
+            } catch (error) {
+                console.error(
+                    "Ошибка при удалении студента:",
+                    error
+                );
+            }
+        }
 
 
 
-
-
-
-
+        if (
+            event.target.classList.contains(
+                "btn-edit"
+            )
+        ) {
+            location.href =
+                `/html/studentFormPage.html?id=${studentID}`;
+        }
+    }
+);
