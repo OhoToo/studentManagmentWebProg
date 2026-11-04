@@ -1,0 +1,29 @@
+meta {
+  name: 05 List search filters sorting pagination
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/requests?fullName=ivanov&group=p3223&dormitory=8&sort=ISU&order=asc&page=0&size=10
+  body: none
+  auth: bearer
+}
+
+params:query {
+  fullName: ivanov
+  group: p3223
+  dormitory: 8
+  sort: ISU
+  order: asc
+  page: 0
+  size: 10
+}
+
+auth:bearer {
+  token: {{userToken}}
+}
+
+docs {
+  Ожидается HTTP 200. Поиск, фильтры, сортировка и пагинация применяются вместе. Возвращается массив студентов.
+}

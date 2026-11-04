@@ -1,128 +1,37 @@
+import {apiRequest} from "./auth.js";
+
 const API_URL = "/api/requests";
 
-async function getStudents(
-    nameFilter = "",
-    groupFilter = "",
-    dormFilter = ""
-) {
-    const params = new URLSearchParams();
-
-    if (nameFilter) {
-        params.set("fullName", nameFilter);
+function getStudents(filters = {}, page = 0, size = 10) {
+    const params = new URLSearchParams({page, size});
+    for (const name of ["fullName", "group", "dormitory", "sort", "order"]) {
+        if (filters[name]) params.set(name, filters[name]);
     }
-
-    if (groupFilter) {
-        params.set("group", groupFilter);
-    }
-
-    if (dormFilter) {
-        params.set("dormitory", dormFilter);
-    }
-
-    const query = params.toString();
-    const url = query ? `${API_URL}?${query}` : API_URL;
-
-    const response = await fetch(url);
-    const result = await response.json();
-
-    if (!response.ok) {
-        throw new Error(
-            result.error || `Ошибка HTTP: ${response.status}`
-        );
-    }
-
-    return result;
+    return apiRequest(`${API_URL}?${params}`);
 }
 
-
-async function getStudentById(studentID) {
-    const response = await fetch(
-        `${API_URL}/${encodeURIComponent(studentID)}`
-    );
-
-    const result = await response.json();
-
-    if (!response.ok) {
-        throw new Error(result.error || `Ошибка HTTP: ${response.status}`);
-    }
-
-    return result;
+function getStudentById(studentID) {
+    return apiRequest(`${API_URL}/${encodeURIComponent(studentID)}`);
 }
 
-
-async function addStudent(student) {
-    const response = await fetch(API_URL, {
+function addStudent(student) {
+    return apiRequest(API_URL, {
         method: "POST",
-
-        headers: {
-            "Content-Type": "application/json"
-        },
-
+        headers: {"Content-Type": "application/json"},
         body: JSON.stringify(student)
     });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-        throw new Error(result.error || `Ошибка HTTP: ${response.status}`);
-    }
-
-    return result;
 }
 
-async function updateStudent(studentID, student) {
-    const response = await fetch(
-        `${API_URL}/${encodeURIComponent(studentID)}`,
-        {
-            method: "PATCH",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify(student)
-        }
-    );
-
-    const result = await response.json();
-
-    if (!response.ok) {
-        throw new Error(result.error || `Ошибка HTTP: ${response.status}`);
-    }
-
-    return result;
+function updateStudent(studentID, student) {
+    return apiRequest(`${API_URL}/${encodeURIComponent(studentID)}`, {
+        method: "PATCH",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(student)
+    });
 }
 
-async function deleteStudent(studentID) {
-    const response = await fetch(
-        `${API_URL}/${encodeURIComponent(studentID)}`,
-        {
-            method: "DELETE"
-        }
-    );
-
-    if (!response.ok) {
-        let result = {};
-
-        try {
-            result = await response.json();
-        } catch {
-            
-        }
-
-        throw new Error(
-            result.error || `Ошибка HTTP: ${response.status}`
-        );
-    }
-
-    return true;
+function deleteStudent(studentID) {
+    return apiRequest(`${API_URL}/${encodeURIComponent(studentID)}`, {method: "DELETE"});
 }
 
-
-export {
-    getStudents,
-    getStudentById,
-    addStudent,
-    updateStudent,
-    deleteStudent
-};
+export {getStudents, getStudentById, addStudent, updateStudent, deleteStudent};

@@ -1,51 +1,41 @@
-import { getStudentById } from "./storageOperations.js";
-
+import {getStudentById} from "./storageOperations.js";
+import {requireAuth, showSession} from "./auth.js";
 
 const studentID = new URLSearchParams(location.search).get("id");
-
 const infoBody = document.querySelector("#student-info");
 
-
 async function loadStudent() {
+    if (!requireAuth()) return;
+    showSession();
     if (!studentID) {
         infoBody.textContent = "ID студента не указан";
         return;
     }
-
     try {
         const student = await getStudentById(studentID);
-
-        if (!student) {
-            infoBody.textContent = "Студент не найден";
-            return;
+        const fields = [
+            ["ФИО", student.fullName],
+            ["Группа", student.group],
+            ["ИСУ ID", student.ISU],
+            ["Общежитие", student.dormNumber],
+            ["Комната", student.room],
+            ["Дата заселения", student.dateArrived],
+            ["Иностранец", student.isForeign ? "Да" : "Нет"],
+            ["Заметки", student.notes || "-"],
+            ["ID", student.ID]
+        ];
+        infoBody.replaceChildren();
+        for (const [label, value] of fields) {
+            const paragraph = document.createElement("p");
+            if (label === "Заметки") paragraph.id = "student-notes";
+            const title = document.createElement("strong");
+            title.textContent = `${label}: `;
+            paragraph.append(title, document.createTextNode(value ?? "-"));
+            infoBody.append(paragraph);
         }
-
-        infoBody.innerHTML = `
-            <p><strong>ФИО:</strong> ${student.fullName}</p>
-
-            <p><strong>Группа:</strong> ${student.group}</p>
-
-            <p><strong>ИСУ ID:</strong> ${student.ISU}</p>
-
-            <p><strong>Общежитие:</strong> ${student.dormNumber ?? "-"}</p>
-
-            <p><strong>Комната:</strong> ${student.room ?? "-"}</p>
-
-            <p><strong>Дата заселения:</strong> ${student.dateArrived ?? "-"}</p>
-
-            <p><strong>Иностранец:</strong> ${student.isForeign ? "Да" : "Нет"}</p>
-
-            <p><strong>Заметки:</strong> ${student.notes || "-"}</p>
-
-            <p><strong>ID:</strong> ${student.ID}</p>
-        `;
     } catch (error) {
-        console.error("Ошибка при загрузке студента:", error);
-
-        infoBody.textContent =
-            "Не удалось получить данные о студенте";
+        infoBody.textContent = error.message;
     }
 }
-
 
 loadStudent();

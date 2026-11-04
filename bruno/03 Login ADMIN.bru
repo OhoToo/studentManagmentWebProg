@@ -1,0 +1,26 @@
+meta {
+  name: 03 Login ADMIN
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "username": "admin",
+    "password": "{{adminPassword}}"
+  }
+}
+
+docs {
+  Ожидается HTTP 200. Скопируй accessToken в adminToken в переменных коллекции.
+}

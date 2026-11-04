@@ -1,0 +1,19 @@
+meta {
+  name: 11 New access token works
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/api/requests
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{userToken}}
+}
+
+docs {
+  Ожидается HTTP 200. Получение списка с обновлённым userToken.
+}

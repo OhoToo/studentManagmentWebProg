@@ -1,153 +1,63 @@
-import {
-    getStudentById,
-    addStudent,
-    updateStudent
-} from "./storageOperations.js";
-
-import { createStudent } from "./studentInitialization.js";
-
+import {getStudentById, addStudent, updateStudent} from "./storageOperations.js";
+import {createStudent} from "./studentInitialization.js";
+import {requireAuth, showSession} from "./auth.js";
 
 const form = document.querySelector("#student-form");
-const formSection = document.querySelector("#form-section");
+const saveButton = document.querySelector("#save-btn");
+const studentID = new URLSearchParams(location.search).get("id");
+const message = document.createElement("p");
+message.className = "error-message";
+message.setAttribute("role", "alert");
+document.querySelector("#form-section").prepend(message);
 
-
-function showError(message) {
-    const oldError = document.querySelector(".error-message");
-
-    if (oldError) {
-        oldError.remove();
+async function init() {
+    if (!requireAuth(true)) return;
+    showSession();
+    if (studentID) {
+        try {
+            const student = await getStudentById(studentID);
+            form.elements["stu-name"].value = student.fullName;
+            form.elements["stu-group"].value = student.group;
+            form.elements["stu-isu"].value = student.ISU;
+            form.elements["stu-hostel"].value = student.dormNumber ?? "";
+            form.elements["stu-room"].value = student.room ?? "";
+            form.elements["stu-date"].value = student.dateArrived ?? "";
+            form.elements["stu-foreign"].checked = student.isForeign;
+            form.elements["stu-notes"].value = student.notes;
+            document.querySelector("#form-title").textContent = "Редактирование студента";
+        } catch (error) {
+            message.textContent = error.message;
+            return;
+        }
     }
-
-    const errorBlock = document.createElement("p");
-
-    errorBlock.classList.add("error-message");
-    errorBlock.textContent = message;
-
-    formSection.prepend(errorBlock);
-}
-
-
-
-async function createNewStudent() {
-    const formData = new FormData(form);
-
-    const student = createStudent(
-        formData.get("stu-name"),
-        formData.get("stu-group"),
-        formData.get("stu-isu"),
-        formData.get("stu-hostel"),
-        formData.get("stu-room"),
-        formData.get("stu-date"),
-        formData.has("stu-foreign"),
-        formData.get("stu-notes")
-    );
-
-    await addStudent(student);
-
-    location.href = "/";
-}
-
-
-
-async function updateExistingStudent(studentID) {
-    const student = await getStudentById(studentID);
-
-    if (student === null) {
-        showError("Студент не найден");
-        return;
-    }
-
-
-    document.querySelector("#stu-name").value =
-        student.fullName ?? "";
-
-    document.querySelector("#stu-group").value =
-        student.group ?? "";
-
-    document.querySelector("#stu-isu").value =
-        student.ISU ?? "";
-
-    document.querySelector("#stu-hostel").value =
-        student.dormNumber ?? "";
-
-    document.querySelector("#stu-room").value =
-        student.room ?? "";
-
-    document.querySelector("#stu-date").value =
-        student.dateArrived ?? "";
-
-    document.querySelector("#stu-foreign").checked =
-        student.isForeign ?? false;
-
-    document.querySelector("#stu-notes").value =
-        student.notes ?? "";
-
-
-    document.querySelector("#form-title").textContent =
-        "Редактирование студента";
-
+    saveButton.disabled = false;
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
-
-        const formData = new FormData(form);
-
+        saveButton.disabled = true;
+        message.textContent = "";
         try {
-            const updatedStudent = createStudent(
-                formData.get("stu-name"),
-                formData.get("stu-group"),
-                formData.get("stu-isu"),
-                formData.get("stu-hostel"),
-                formData.get("stu-room"),
-                formData.get("stu-date"),
-                formData.has("stu-foreign"),
-                formData.get("stu-notes"),
-                student.ID
+            const student = createStudent(
+                form.elements["stu-name"].value,
+                form.elements["stu-group"].value,
+                form.elements["stu-isu"].value,
+                form.elements["stu-hostel"].value,
+                form.elements["stu-room"].value,
+                form.elements["stu-date"].value,
+                form.elements["stu-foreign"].checked,
+                form.elements["stu-notes"].value
             );
-
-            await updateStudent(
-                studentID,
-                updatedStudent
-            );
-
+            if (studentID) {
+                await updateStudent(studentID, student);
+            } else {
+                await addStudent(student);
+            }
             location.href = "/";
         } catch (error) {
-            console.error(error);
-            showError(error.message);
+            message.textContent = error.message;
+        } finally {
+            saveButton.disabled = false;
         }
     });
 }
-
-
-
-async function init() {
-    const studentID =
-        new URLSearchParams(location.search).get("id");
-
-
-    if (!studentID) {
-        form.addEventListener("submit", async (event) => {
-            event.preventDefault();
-
-            try {
-                await createNewStudent();
-            } catch (error) {
-                console.error(error);
-                showError(error.message);
-            }
-        });
-
-        return;
-    }
-
-
-
-    try {
-        await updateExistingStudent(studentID);
-    } catch (error) {
-        console.error(error);
-        showError(error.message);
-    }
-}
-
 
 init();

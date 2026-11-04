@@ -1,33 +1,42 @@
-//! Отображение списка студентов
+function renderTable(table, students, canEdit) {
+    table.replaceChildren();
 
-function renderTable(
-    table = document.querySelector("tbody"),
-    students = []
-) {
-    table.innerHTML = "";
+    if (students.length === 0) {
+        const row = table.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 4;
+        cell.textContent = "Студенты не найдены";
+        return;
+    }
 
-    for (let i = 0; i < students.length; i++) {
-        const template = `
-            <tr data-id="${students[i].ID}">
-                <td>
-                    <a href="/html/infoPage.html?id=${students[i].ID}">
-                        ${students[i].fullName}
-                    </a>
-                </td>
+    for (const student of students) {
+        const row = table.insertRow();
+        row.dataset.id = student.ID;
 
-                <td>${students[i].group}</td>
+        const link = document.createElement("a");
+        link.href = `/html/infoPage.html?id=${encodeURIComponent(student.ID)}`;
+        link.textContent = student.fullName;
+        row.insertCell().append(link);
+        row.insertCell().textContent = student.group;
+        row.insertCell().textContent = student.ISU;
 
-                <td>${students[i].ISU}</td>
+        const actions = row.insertCell();
+        if (canEdit) {
+            const edit = document.createElement("button");
+            edit.type = "button";
+            edit.className = "btn-edit";
+            edit.textContent = "Изменить";
 
-                <td>
-                    <button class="btn-edit">Изменить</button>
-                    <button class="btn-delete">Удалить</button>
-                </td>
-            </tr>
-        `;
+            const remove = document.createElement("button");
+            remove.type = "button";
+            remove.className = "btn-delete";
+            remove.textContent = "Удалить";
 
-        table.innerHTML += template;
+            actions.append(edit, document.createTextNode(" "), remove);
+        } else {
+            actions.textContent = "Только просмотр";
+        }
     }
 }
 
-export { renderTable };
+export {renderTable};

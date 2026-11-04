@@ -1,0 +1,19 @@
+meta {
+  name: 15 Get deleted student
+  type: http
+  seq: 15
+}
+
+get {
+  url: {{baseUrl}}/api/requests/{{studentId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{userToken}}
+}
+
+docs {
+  Ожидается HTTP 404. Удалённый студент не найден. Возвращается JSON с полем error.
+}

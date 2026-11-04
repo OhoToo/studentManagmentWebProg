@@ -1,0 +1,19 @@
+meta {
+  name: 14 Delete student
+  type: http
+  seq: 14
+}
+
+delete {
+  url: {{baseUrl}}/api/requests/{{studentId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+docs {
+  Ожидается HTTP 204. ADMIN удаляет созданного в запросе 04 студента. Тело ответа пустое.
+}

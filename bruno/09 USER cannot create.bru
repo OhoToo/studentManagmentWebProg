@@ -1,0 +1,36 @@
+meta {
+  name: 09 USER cannot create
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/api/requests
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{userToken}}
+}
+
+body:json {
+  {
+    "fullName": "Ivanov Ivan",
+    "group": "p3223",
+    "ISU": "123456",
+    "dormNumber": 8,
+    "room": 101,
+    "dateArrived": "2026-09-01",
+    "isForeign": false,
+    "notes": ""
+  }
+}
+
+docs {
+  Ожидается HTTP 403. USER не может создавать студентов.
+}

@@ -1,2 +1,0 @@
-# LocalStoragewebprog
-Lab1

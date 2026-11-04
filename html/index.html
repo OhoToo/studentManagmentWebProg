@@ -10,6 +10,7 @@
     >
 
     <title>Управление студентами</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
 
     <link
         rel="stylesheet"
@@ -34,6 +35,8 @@
         <section id="list-section">
 
             <h2>Список студентов</h2>
+
+            <p id="list-message" class="error-message" role="alert"></p>
 
             <form id="filter-form" class="filter-form">
 
@@ -73,6 +76,34 @@
                 </label>
 
 
+                <label>
+                    Сортировать по:
+                    <select name="sort">
+                        <option value="ID">ID</option>
+                        <option value="fullName">ФИО</option>
+                        <option value="group">Группа</option>
+                        <option value="ISU">ИСУ</option>
+                        <option value="dormNumber">Общежитие</option>
+                        <option value="room">Комната</option>
+                        <option value="dateArrived">Дата заселения</option>
+                        <option value="isForeign">Иностранец</option>
+                        <option value="notes">Заметки</option>
+                    </select>
+                </label>
+
+                <label>
+                    Порядок:
+                    <select name="order">
+                        <option value="asc">По возрастанию</option>
+                        <option value="desc">По убыванию</option>
+                    </select>
+                </label>
+
+                <label>
+                    Студентов на странице:
+                    <input type="number" name="size" value="10" min="1" step="1" required>
+                </label>
+
                 <div class="form-buttons">
 
                     <button
@@ -110,10 +141,16 @@
 
             </table>
 
+            <nav class="pagination" aria-label="Страницы списка студентов">
+                <button type="button" id="previous-page" disabled>Назад</button>
+                <span id="page-number" aria-live="polite">Страница 1</span>
+                <button type="button" id="next-page" disabled>Далее</button>
+            </nav>
+
         </section>
 
 
-        <div class="add-button-wrapper">
+        <div class="add-button-wrapper hidden" id="add-student-panel">
 
             <button
                 id="show-add-form-bin"

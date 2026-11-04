@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход и регистрация</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="/css/styles.css">
+    <script type="module" src="/js/authPage.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Система "Управление студентами"</h1>
+    </header>
+    <main>
+        <p id="auth-message" role="status" aria-live="polite"></p>
+        <form id="login-form">
+            <h2>Вход</h2>
+            <label>
+                Логин:
+                <input name="username" autocomplete="username" maxlength="255" required>
+            </label>
+            <label>
+                Пароль:
+                <input type="password" name="password" autocomplete="current-password" required>
+            </label>
+            <div class="form-buttons">
+                <button type="submit">Войти</button>
+            </div>
+        </form>
+        <form id="register-form">
+            <h2>Регистрация</h2>
+            <label>
+                Логин:
+                <input name="username" autocomplete="username" maxlength="255" required>
+            </label>
+            <label>
+                Почта (необязательно):
+                <input type="email" name="email" autocomplete="email" maxlength="255">
+            </label>
+            <label>
+                Пароль:
+                <input type="password" name="password" autocomplete="new-password" required>
+            </label>
+            <div class="form-buttons">
+                <button type="submit">Зарегистрироваться</button>
+            </div>
+        </form>
+    </main>
+</body>
+</html>
