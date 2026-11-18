@@ -3,9 +3,9 @@ package com.example.dto;
 import jakarta.validation.constraints.*;
 
 public class RegisterRequest {
-    @NotBlank @Size(max = 255)
+    @NotBlank @Size(max = 50)
     public String username;
-    @Email @Size(max = 255)
+    @Email @Size(max = 50)
     public String email;
     @NotBlank// @Size(min=8)
     public String password;

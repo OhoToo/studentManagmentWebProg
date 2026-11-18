@@ -1,0 +1,16 @@
+.git
+.venv
+__pycache__
+target
+node_modules
+frontend/node_modules
+frontend/.svelte-kit
+frontend/build
+.env
+.env.*
+frontend/.env
+frontend/.env.*
+application.properties
+*.log
+.agents
+.codex

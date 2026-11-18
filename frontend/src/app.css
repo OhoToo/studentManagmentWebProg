@@ -1,0 +1,268 @@
+﻿:root {
+    font: 14px/1.5 'Segoe UI', Arial, sans-serif;
+    color-scheme: dark;
+    color: #f5f5f5;
+    background: #0d0d0d;
+    --surface: #171717;
+    --surface-hover: #242424;
+    --field: #101010;
+    --border: #353535;
+    --text: #f5f5f5;
+    --muted: #a0a0a0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    min-width: 320px;
+    margin: 0;
+}
+
+[hidden], .form-message:empty {
+    display: none !important;
+}
+
+a {
+    color: inherit;
+    text-underline-offset: 4px;
+}
+
+a:hover {
+    color: #c7c7c7;
+}
+
+main {
+    width: calc(100% - 64px);
+    max-width: 1120px;
+    margin: 64px auto 80px;
+}
+
+h1 {
+    margin: 0 0 32px;
+    font-size: 44px;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -1.2px;
+    overflow-wrap: anywhere;
+}
+
+h2 {
+    margin: 0 0 24px;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+p {
+    margin-top: 0;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.panel {
+    border: 1px solid var(--border);
+    background: var(--surface);
+}
+
+button, input, select, textarea, .primary-link {
+    border: 1px solid var(--border);
+    border-radius: 0;
+    color: inherit;
+    font: inherit;
+}
+
+button, .primary-link {
+    min-height: 42px;
+    padding: 10px 16px;
+    background: transparent;
+    font-weight: 500;
+    line-height: 1.4;
+    cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+    border-color: #626262;
+    background: var(--surface-hover);
+}
+
+button:disabled, input:disabled, select:disabled, textarea:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.primary-button, .primary-link {
+    border-color: #ededed;
+    color: #111111;
+    background: #ededed;
+}
+
+.primary-button:hover:not(:disabled), .primary-link:hover {
+    border-color: #ffffff;
+    color: #111111;
+    background: #ffffff;
+}
+
+.primary-link {
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+}
+
+button:focus-visible, a:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 4px;
+}
+
+input:not([type='checkbox']), select, textarea {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 11px 12px;
+    outline: none;
+    background: var(--field);
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #ededed;
+}
+
+input[type='checkbox'] {
+    width: 17px;
+    height: 17px;
+    margin: 0;
+    accent-color: #ededed;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+textarea {
+    min-height: 112px;
+    resize: vertical;
+}
+
+label, legend {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.form-message {
+    margin: 24px 0 0;
+    padding: 14px 16px;
+    border-left: 2px solid var(--text);
+    color: var(--text);
+    background: var(--surface-hover);
+}
+
+.auth-page {
+    width: calc(100% - 32px);
+    max-width: 440px;
+    padding: 36px;
+}
+
+.login-page {
+    margin-top: clamp(48px, 16vh, 160px);
+}
+
+.auth-page h1 {
+    font-size: 32px;
+    letter-spacing: -0.8px;
+}
+
+.auth-page > p {
+    margin: 28px 0 0;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+}
+
+.details-page, .profile-page {
+    max-width: 880px;
+}
+
+.profile-card, .details-page > .details-list {
+    padding: 28px 32px;
+}
+
+.profile-card h2 {
+    margin-bottom: 8px;
+}
+
+.details-list {
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr);
+    margin: 0;
+}
+
+.details-list dt, .details-list dd {
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.details-list dt {
+    padding-right: 24px;
+    color: var(--muted);
+}
+
+.details-list dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.details-list dt:last-of-type, .details-list dd:last-of-type {
+    border-bottom: 0;
+}
+
+.profile-page > p {
+    margin: 24px 0 16px;
+}
+
+.page-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 28px;
+}
+
+@media (max-width: 640px) {
+    main {
+        width: calc(100% - 32px);
+        margin: 36px auto 48px;
+    }
+
+    h1 {
+        margin-bottom: 24px;
+        font-size: 30px;
+    }
+
+    .auth-page {
+        padding: 28px 24px;
+    }
+
+    .login-page {
+        margin-top: 64px;
+    }
+
+    .profile-card, .details-page > .details-list {
+        padding: 20px;
+    }
+
+    .details-list {
+        grid-template-columns: 1fr;
+    }
+
+    .details-list dt {
+        padding: 16px 0 4px;
+        border: 0;
+        font-size: 12px;
+    }
+
+    .details-list dd {
+        padding: 0 0 16px;
+    }
+}

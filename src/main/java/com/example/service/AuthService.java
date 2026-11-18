@@ -89,6 +89,18 @@ public class AuthService {
         return jwtService.issueTokens(user);
     }
 
+    public UserDto currentUser(String subject) {
+        UUID id;
+        try {
+            id = UUID.fromString(subject);
+        } catch (IllegalArgumentException ex) {
+            throw new ApiException(401, "Invalid user identifier");
+        }
+        AppUser user = repository.findById(id).orElse(null);
+        if (user == null) throw new ApiException(401, "User not found");
+        return new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
+    }
+
     @Transactional
     public void createInitialAdmin(RegisterRequest request) {
         AppUser existing = repository.findByUsername(request.username.strip()).orElse(null);
