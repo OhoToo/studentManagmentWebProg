@@ -1,0 +1,31 @@
+meta {
+  name: 13 Invalid student
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{baseUrl}}/api/requests
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {
+    "fullName": "X",
+    "group": "bad",
+    "ISU": "1"
+  }
+}
+
+docs {
+  Ожидается HTTP 422. Возвращается JSON с полем error.
+}

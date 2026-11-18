@@ -1,0 +1,29 @@
+meta {
+  name: 08 Update student
+  type: http
+  seq: 8
+}
+
+patch {
+  url: {{baseUrl}}/api/requests/{{studentId}}
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {
+    "notes": "Updated"
+  }
+}
+
+docs {
+  Ожидается HTTP 200. PATCH изменяет только переданные поля.
+}

@@ -1,0 +1,25 @@
+meta {
+  name: 10 Refresh USER tokens
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{baseUrl}}/api/auth/refresh
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "refreshToken": "{{refreshToken}}"
+  }
+}
+
+docs {
+  Ожидается HTTP 200. Пароль не нужен. Замени userToken и refreshToken новыми accessToken и refreshToken из ответа.
+}

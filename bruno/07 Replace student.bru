@@ -1,0 +1,31 @@
+meta {
+  name: 07 Replace student
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{baseUrl}}/api/requests/{{studentId}}
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {
+    "fullName": "Petrov Petr",
+    "group": "p3224",
+    "ISU": "123456"
+  }
+}
+
+docs {
+  Ожидается HTTP 200. PUT заменяет данные студента. Пропущенные необязательные поля сбрасываются.
+}

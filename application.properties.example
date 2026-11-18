@@ -1,0 +1,12 @@
+spring.datasource.url=jdbc:postgresql://localhost:5432/students
+spring.datasource.username=postgres
+spring.datasource.password=
+spring.jpa.hibernate.ddl-auto=validate
+
+app.jwt.secret=
+app.jwt.access-ttl=15m
+app.jwt.refresh-ttl=7d
+app.admin.username=admin
+app.admin.email=
+app.admin.password=
+
