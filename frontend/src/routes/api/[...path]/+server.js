@@ -1,4 +1,5 @@
 import { json } from '@sveltejs/kit';
+import { getStudents, clearStudentsCache } from '#lib/server/students.js';
 import { clearTokens, javaRequest, JavaError, saveTokens, sendToJava } from '#lib/server/java.js';
 
 /** @type {import('./$types').RequestHandler} */
@@ -44,8 +45,13 @@ async function handle(event) {
             throw new JavaError(405, 'Метод не поддерживается.');
         }
 
+        if (path === 'requests' && method === 'GET' && !event.url.search) {
+            return json(await getStudents(event), { headers });
+        }
+
         const body = ['POST', 'PUT', 'PATCH'].includes(method) ? await event.request.text() : undefined;
         const result = await javaRequest(event, path + event.url.search, { method, body });
+        if (isStudent && method !== 'GET') clearStudentsCache();
         if (method === 'DELETE') return new Response(null, { status: 204, headers });
         return json(result, { status: method === 'POST' ? 201 : 200, headers });
     } catch (error) {

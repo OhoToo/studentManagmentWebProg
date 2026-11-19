@@ -1,17 +1,4 @@
-import { defer, map, Subject } from 'rxjs';
-import { api, ApiError } from './api.js';
-
-/** @returns {import('rxjs').Observable<import('./studentTypes.js').Student[]>} */
-export function loadStudents() {
-    return defer(() => api('/api/requests')).pipe(
-        map(students => {
-            if (!Array.isArray(students)) {
-                throw new ApiError(502, 'Сервер вернул список студентов в неожиданном формате.');
-            }
-            return students;
-        })
-    );
-}
+import { map, Subject } from 'rxjs';
 
 /** @typedef {import('./studentTypes.js').Student} Student */
 /** @typedef {import('./studentTypes.js').StudentInput} StudentInput */

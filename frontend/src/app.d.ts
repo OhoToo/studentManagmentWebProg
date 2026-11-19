@@ -12,7 +12,10 @@ declare global {
 			readonly user: User | null;
 		}
 		// interface Error {}
-		// interface Locals {}
+		interface Locals {
+			user: User | null;
+			authError: string;
+		}
 		// interface PageData {}
 		// interface PageState {}
 		// interface Platform {}

@@ -2,8 +2,7 @@
     import '../app.css';
     import favicon from '../../../favicon.png';
     import { setContext } from 'svelte';
-    import { page } from '$app/state';
-    import { refreshAll } from '$app/navigation';
+    import { page, navigating } from '$app/state';
     import Navigation from './blocks/navigation.svelte';
     import { links as baseLinks } from './basePages';
 
@@ -33,13 +32,8 @@
 
 <!-- ! Page content block ------------------------------------------- -->
 
-{#if data.authError && page.route.id !== '/login' && page.route.id !== '/register'}
-    <main>
-        <h1>Не удалось открыть страницу</h1>
-        <p class="form-message">{data.authError}</p>
-        <button type="button" onclick={() => refreshAll()}>Повторить</button>
-        <a href="/login">Ко входу</a>
-    </main>
-{:else}
-    {@render children()}
+{#if navigating.to}
+    <p class="form-message">Загрузка страницы…</p>
 {/if}
+
+{@render children()}

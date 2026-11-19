@@ -1,3 +1,5 @@
+name: localstoragewebprog
+
 services:
   db:
     image: postgres:18-alpine

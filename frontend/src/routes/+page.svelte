@@ -1,9 +1,9 @@
 <script>
-    import { getContext, onMount } from 'svelte';
-    import { goto } from '$app/navigation';
-    import { ApiError } from '#lib/api.js';
-    import { createStudentView, loadStudents } from '#lib/students.js';
+    import { getContext, onDestroy, untrack } from 'svelte';
+    import { createStudentView } from '#lib/students.js';
     import earth from '../../../Земля пнг.png';
+
+    let { data } = $props();
 
     /** @typedef {import('#lib/studentTypes.js').Student} Student */
     /** @typedef {import('#lib/studentTypes.js').StudentInput} StudentInput */
@@ -11,57 +11,16 @@
     const app = getContext('app');
     let canEdit = $derived(app.user?.role === 'ADMIN');
     /** @type {Student[]} */
-    let students = $state([]);
-    let loading = $state(true);
-    let message = $state('');
-    /** @type {import('rxjs').Subscription | undefined} */
-    let subscription;
+    let students = $derived(data.students);
     const view = createStudentView();
     /** @type {Student[]} */
     let visibleStudents = $state([]);
     let totalStudents = $state(0);
     let search = $state('');
 
-    function updateView() {
-        view.changes.next({ students, search, filters, sortKeys, start, visibleCount });
+    function updateView(list = students) {
+        view.changes.next({ students: list, search, filters, sortKeys, start, visibleCount });
     }
-
-    function reloadStudents() {
-        subscription?.unsubscribe();
-        loading = true;
-        message = '';
-        subscription = loadStudents().subscribe({
-            next: list => {
-                students = list;
-                start = 0;
-                loading = false;
-                updateView();
-            },
-            error: error => {
-                students = [];
-                loading = false;
-                updateView();
-                message = error instanceof Error ? error.message : 'Не удалось загрузить студентов.';
-                if (error instanceof ApiError && error.status === 401) {
-                    goto('/login', { refreshAll: true });
-                }
-            }
-        });
-    }
-
-    onMount(() => {
-        const viewSubscription = view.results.subscribe(result => {
-            visibleStudents = result.students;
-            totalStudents = result.total;
-            start = result.start;
-        });
-        reloadStudents();
-        return () => {
-            subscription?.unsubscribe();
-            viewSubscription.unsubscribe();
-            view.changes.complete();
-        };
-    });
 
     /** @type {Array<{ key: keyof StudentInput, text: string, type?: 'number' | 'date' }>} */
     let filterableStudentKeys = [
@@ -115,6 +74,22 @@
         });
     }
 
+    const viewSubscription = view.results.subscribe(result => {
+        visibleStudents = result.students;
+        totalStudents = result.total;
+        start = result.start;
+    });
+    updateView();
+
+    $effect(() => {
+        const list = data.students;
+        untrack(() => updateView(list));
+    });
+
+    onDestroy(() => {
+        viewSubscription.unsubscribe();
+        view.changes.complete();
+    });
 </script>
 
 
@@ -133,11 +108,6 @@
             <a class="primary-link" href="/students/new">Добавить студента</a>
         {/if}
     </div>
-
-    <p class="form-message">{message}</p>
-    {#if message}
-        <button type="button" disabled={loading} onclick={reloadStudents}>Повторить загрузку</button>
-    {/if}
 
     <!-- ! Table navigation up block ------------------------------------------- -->
 
@@ -305,9 +275,7 @@
                 {:else}
                     <tr>
                         <td colspan={canEdit ? 4 : 3}>
-                            {#if loading}
-                                Загрузка студентов…
-                            {:else if students.length === 0}
+                            {#if students.length === 0}
                                 Список студентов пуст
                             {:else}
                                 По заданным условиям студентов нет
